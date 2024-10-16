@@ -11,6 +11,9 @@ The main purpose of this application is to:
 3. Implement proper error handling and CORS configuration.
 4. Provide a starting point for developers to build more complex applications.
 
+
+   
+
 ## Project Structure
 
 my-fullstack-app/
@@ -145,6 +148,50 @@ The frontend application will start running on `http://localhost:4200`.
 
 3. Update the `environment.prod.ts` file with the URL of your deployed backend API.
 
+
+```For Proxy - Change dataService.js
+
+const axios = require('axios');
+const { HttpsProxyAgent } = require('https-proxy-agent');
+
+class DataService {
+  constructor() {
+    // Proxy configuration
+    this.proxyConfig = {
+      protocol: 'http',
+      host: 'your.org.com',
+      port: 8000
+    };
+
+    // Create a proxy agent
+    this.httpsAgent = new HttpsProxyAgent(`${this.proxyConfig.protocol}://${this.proxyConfig.host}:${this.proxyConfig.port}`);
+
+    // Create an Axios instance with the custom configuration
+    this.axiosInstance = axios.create({
+      baseURL: 'https://jsonplaceholder.typicode.com/posts', // Replace with your API base URL
+      httpsAgent: this.httpsAgent,
+      proxy: false, // This is important to prevent axios from using the proxy directly
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'User-Agent': 'axios/0.21.4'
+      }
+    });
+  }
+
+  async fetchData(endpoint) {
+    try {
+      const response = await this.axiosInstance.get(endpoint);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      throw error; // Re-throw the error for the caller to handle
+    }
+  }
+}
+
+module.exports = new DataService();
+
+```
 ## Contributing
 
 1. Fork the repository.
