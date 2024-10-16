@@ -1,0 +1,21 @@
+// Add your component-specific styles here
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+th, td {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+}
+
+th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
